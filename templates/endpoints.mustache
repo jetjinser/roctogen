@@ -3,6 +3,8 @@
 
 pub const GITHUB_BASE_API_URL: &str = if cfg!(feature = "mock") {
     "http://localhost:8080"
+} else if cfg!(feature = "reqwest_wasi") {
+    "http://api.github.com"
 } else {
     "https://api.github.com"
 };

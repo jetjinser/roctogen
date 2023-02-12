@@ -1,7 +1,7 @@
 use http::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE, USER_AGENT};
 
 use log::debug;
-use reqwest::{Body, Client, Request, RequestBuilder, Response};
+use reqwest_wasi::{Body, Client, Request, RequestBuilder, Response};
 
 use super::{FromJson, GitHubRequest, GitHubRequestBuilder, GitHubResponseExt};
 use crate::auth::Auth;
@@ -15,11 +15,11 @@ pub enum AdapterError {
     #[error(transparent)]
     Http(#[from] http::Error),
     #[error(transparent)]
-    Reqwest(#[from] reqwest::Error),
+    Reqwest(#[from] reqwest_wasi::Error),
 }
 
 pub(crate) fn fetch(_request: Request) -> Result<Response, AdapterError> {
-    unimplemented!("Reqwest adapter only has async fetch implemented");
+    unimplemented!("reqwest_wasi adapter only has async fetch implemented");
 }
 
 pub(crate) async fn fetch_async(request: Request) -> Result<Response, AdapterError> {
@@ -41,7 +41,7 @@ impl GitHubResponseExt for Response {
 }
 
 pub(crate) fn to_json<E: for<'de> Deserialize<'de>>(_res: Response) -> Result<E, AdapterError> {
-    unimplemented!("Reqwest adapter only has async json conversion implemented");
+    unimplemented!("reqwest_wasi adapter only has async json conversion implemented");
 }
 
 pub(crate) async fn to_json_async<E: for<'de> Deserialize<'de> + Unpin + std::fmt::Debug>(

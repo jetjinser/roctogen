@@ -11,3 +11,6 @@ target/
 /.project
 /generated-sources
 /.cargo
+
+.direnv
+.envrc

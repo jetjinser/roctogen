@@ -13,13 +13,13 @@ pub(crate) use {
     self::isahc::fetch, self::isahc::fetch_async, self::isahc::to_json, self::isahc::to_json_async,
 };
 
-#[cfg(target_arch = "wasm32")]
+#[cfg(all(target_arch = "wasm32", not(feature = "reqwest_wasi")))]
 pub mod wasm;
 
-#[cfg(target_arch = "wasm32")]
+#[cfg(all(target_arch = "wasm32", not(feature = "reqwest_wasi")))]
 pub(crate) use {wasm::fetch_async, wasm::to_json_async};
 
-#[cfg(target_arch = "wasm32")]
+#[cfg(all(target_arch = "wasm32", not(feature = "reqwest_wasi")))]
 pub use wasm::AdapterError;
 
 #[cfg(feature = "reqwest")]
@@ -32,6 +32,18 @@ pub use self::reqwest::AdapterError;
 pub(crate) use {
     self::reqwest::fetch, self::reqwest::fetch_async, self::reqwest::to_json,
     self::reqwest::to_json_async,
+};
+
+#[cfg(feature = "reqwest_wasi")]
+pub mod reqwest_wasi;
+
+#[cfg(feature = "reqwest_wasi")]
+pub use self::reqwest_wasi::AdapterError;
+
+#[cfg(feature = "reqwest_wasi")]
+pub(crate) use {
+    self::reqwest_wasi::fetch, self::reqwest_wasi::fetch_async, self::reqwest_wasi::to_json,
+    self::reqwest_wasi::to_json_async,
 };
 
 #[cfg(feature = "ureq")]
@@ -48,6 +60,7 @@ pub(crate) use {
 #[cfg(all(
     not(feature = "isahc"),
     not(feature = "reqwest"),
+    not(feature = "reqwest_wasi"),
     not(feature = "ureq"),
     not(target_arch = "wasm32")
 ))]
@@ -57,6 +70,7 @@ pub enum AdapterError {}
 #[cfg(all(
     not(feature = "isahc"),
     not(feature = "reqwest"),
+    not(feature = "reqwest_wasi"),
     not(feature = "ureq"),
     not(target_arch = "wasm32")
 ))]
@@ -69,6 +83,7 @@ pub(crate) fn fetch(
 #[cfg(all(
     not(feature = "isahc"),
     not(feature = "reqwest"),
+    not(feature = "reqwest_wasi"),
     not(feature = "ureq"),
     not(target_arch = "wasm32")
 ))]
@@ -81,6 +96,7 @@ pub(crate) async fn fetch_async(
 #[cfg(all(
     not(feature = "isahc"),
     not(feature = "reqwest"),
+    not(feature = "reqwest_wasi"),
     not(feature = "ureq"),
     not(target_arch = "wasm32")
 ))]
@@ -93,16 +109,20 @@ pub(crate) fn to_json<E: for<'de> Deserialize<'de>>(
 #[cfg(all(
     not(feature = "isahc"),
     not(feature = "reqwest"),
+    not(feature = "reqwest_wasi"),
     not(feature = "ureq"),
     not(target_arch = "wasm32")
 ))]
-pub(crate) async fn to_json_async<E: for<'de> Deserialize<'de>>(_res: http::Response<Vec<u8>>) -> Result<E, AdapterError> {
+pub(crate) async fn to_json_async<E: for<'de> Deserialize<'de>>(
+    _res: http::Response<Vec<u8>>,
+) -> Result<E, AdapterError> {
     unimplemented!("Use a client adapter feature, or target wasm");
 }
 
 #[cfg(all(
     not(feature = "isahc"),
     not(feature = "reqwest"),
+    not(feature = "reqwest_wasi"),
     not(feature = "ureq"),
     not(target_arch = "wasm32")
 ))]
@@ -119,6 +139,7 @@ impl GitHubResponseExt for http::Response<Vec<u8>> {
 #[cfg(all(
     not(feature = "isahc"),
     not(feature = "reqwest"),
+    not(feature = "reqwest_wasi"),
     not(feature = "ureq"),
     not(target_arch = "wasm32")
 ))]
@@ -131,6 +152,7 @@ impl GitHubRequestBuilder<Vec<u8>> for http::Request<Vec<u8>> {
 #[cfg(all(
     not(feature = "isahc"),
     not(feature = "reqwest"),
+    not(feature = "reqwest_wasi"),
     not(feature = "ureq"),
     not(target_arch = "wasm32")
 ))]
